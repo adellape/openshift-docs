@@ -57,7 +57,7 @@ and
 xref:../../install_config/install/host_preparation.adoc#install-config-install-host-preparation[Host
 Preparation] topics to prepare your hosts. This includes verifying system and
 environment requirements per component type and properly installing and
-configuring Docker. It also includes installing Ansible version 2.2.0 or later,
+configuring Docker. It also includes installing Ansible version 2.3 or later,
 as the advanced installation method is based on Ansible playbooks and as such
 requires directly invoking Ansible.
 
@@ -172,12 +172,14 @@ Containerized installations are supported starting in {product-title} 3.1.1.
 endif::[]
 
 |`openshift_master_admission_plugin_config`
-a|This variable sets the parameter and arbitrary JSON values as per the requirement in your inventory hosts file. For example:
+a|This variable sets the parameter and arbitrary JSON values as per the requirement in your inventory hosts file.
+////
+For example:
 
 ----
 openshift_master_admission_plugin_config={"ClusterResourceOverride":{"configuration":{"apiVersion":"v1","kind":"ClusterResourceOverrideConfig","memoryRequestToLimitPercent":"25","cpuRequestToLimitPercent":"25","limitCPUToMemoryPercent":"200"}}}
 ----
-
+////
 |`openshift_master_audit_config`
 |This variable enables API service auditing. See
 xref:../../install_config/master_node_configuration.adoc#master-node-config-audit-config[Audit
@@ -461,10 +463,10 @@ the following variables in the *_/etc/ansible/hosts_* file:
 |===
 
 |Variable |Purpose
-|openshift_master_api_port
+|`openshift_master_api_port`
 |This variable sets the port number to access the {product-title} API.
 
-|openshift_master_console_port
+|`openshift_master_console_port`
 |This variable sets the console port number to access the {product-title} console with a web browser.
 |===
 
@@ -581,8 +583,8 @@ endif::[]
 ifdef::openshift-origin[]
 link:https://github.com/openshift/origin#support-for-kubernetes-alpha-features[Tech Preview]
 endif::[]
-features in {product-title} 3.6. They must not be used in production and they
-are not supported for upgrades to {product-title} 3.6. During this phase, they
+features in {product-title} 3.7. They must not be used in production and they
+are not supported for upgrades to {product-title} 3.7. During this phase, they
 are only meant for use with new cluster installations in non-production
 environments.
 ====
@@ -1421,14 +1423,17 @@ xref:../../install_config/redeploying_certificates.adoc#install-config-redeployi
 [[advanced-install-cluster-metrics]]
 === Configuring Cluster Metrics
 
-Cluster metrics are not set to automatically deploy by default. Set the
-following to enable cluster metrics when using the advanced install:
+Starting with {product-title} 3.7, cluster metrics are set to deploy
+automatically by default during installation:
+
+[NOTE]
+====
+To disable automatic deployment, set the following cluster variable:
 
 ----
-[OSEv3:vars]
-
-openshift_metrics_install_metrics=true
+openshift_metrics_install_metrics=false
 ----
+====
 
 The {product-title} web console uses the data coming from the Hawkular Metrics
 service to display its graphs. The metrics public URL can be set during cluster
@@ -1508,14 +1513,17 @@ openshift_metrics_cassandra_storage_type=dynamic
 [[advanced-install-cluster-logging]]
 === Configuring Cluster Logging
 
-Cluster logging is not set to automatically deploy by default. Set the
-following to enable cluster logging when using the advanced installation method:
+Starting with {product-title} 3.7, cluster logging is set to deploy
+automatically by default during installation.
+
+[NOTE]
+====
+To disable automatic deployment, set the following cluster variable:
 
 ----
-[OSEv3:vars]
-
-openshift_logging_install_logging=true
+openshift_metrics_install_logging=false
 ----
+====
 
 [[advanced-installation-logging-storage]]
 ==== Configuring Logging Storage
@@ -1583,31 +1591,18 @@ openshift_logging_storage_kind=dynamic
 ----
 
 [[enabling-service-catalog]]
-=== Enabling the Service Catalog
+=== Configuring the Service Catalog
+
+Starting with {product-title} 3.7, the
+xref:../../architecture/service_catalog/index.adoc#architecture-additional-concepts-service-catalog[service
+catalog] is enabled by default during installation. Enabling the service broker
+allows service brokers to be registered with the catalog. The web console is
+also configured to enable an updated landing page for browsing the catalog.
 
 [NOTE]
 ====
-Enabling the service catalog is a Technology Preview feature only.
-ifdef::openshift-enterprise[]
-Technology Preview features are not
-supported with Red Hat production service level agreements (SLAs), might not be
-functionally complete, and Red Hat does not recommend to use them for
-production. These features provide early access to upcoming product features,
-enabling customers to test functionality and provide feedback during the
-development process.
-
-For more information on Red Hat Technology Preview features support scope, see
-https://access.redhat.com/support/offerings/techpreview/.
-endif::[]
-====
-
-Enabling the
-xref:../../architecture/service_catalog/index.adoc#architecture-additional-concepts-service-catalog[service catalog] allows service brokers to be registered with the catalog. The web
-console is also configured to enable an updated landing page for browsing the
-catalog.
-
-To enable the service catalog, add the following in your inventory file's
-`[OSEv3:vars]` section:
+To disable automatic deployment, set the following cluster variables in your
+inventory file:
 
 ----
 openshift_enable_service_catalog=true
@@ -1616,40 +1611,22 @@ openshift_service_catalog_image_prefix=openshift/origin-
 openshift_service_catalog_image_version=latest
 endif::[]
 ----
+====
 
 When the service catalog is enabled, the web console shows the updated landing
-page but still uses the normal image stream and template behavior. The Ansible
-service broker is also enabled; see
-xref:configuring-ansible-service-broker[Configuring the Ansible Service Broker]
-for more details. The template service broker (TSB) is not deployed by default;
-see xref:configuring-template-service-broker[Configuring the Template Service Broker] for more information.
+page. The OpenShift Ansible broker and template service broker are both enabled
+as well; see xref:configuring-ansible-service-broker[Configuring the Ansible Service Broker] and xref:configuring-template-service-broker[Configuring the Template Service Broker] for more information.
 
 [[configuring-ansible-service-broker]]
 === Configuring the Ansible Service Broker
 
-[NOTE]
-====
-Enabling the Ansible service broker is a Technology Preview feature only.
-ifdef::openshift-enterprise[]
-Technology Preview features are not
-supported with Red Hat production service level agreements (SLAs), might not be
-functionally complete, and Red Hat does not recommend to use them for
-production. These features provide early access to upcoming product features,
-enabling customers to test functionality and provide feedback during the
-development process.
+Starting with {product-title} 3.7, the
+xref:../../architecture/service_catalog/ansible_service_broker.adoc#arch-ansible-service-broker[OpenShift Ansible broker] (OAB) is enabled by default.
 
-For more information on Red Hat Technology Preview features support scope, see
-https://access.redhat.com/support/offerings/techpreview/.
-endif::[]
-====
-
-If you have xref:enabling-service-catalog[enabled the service catalog], the
-xref:../../architecture/service_catalog/ansible_service_broker.adoc#arch-ansible-service-broker[Ansible service broker] (ASB) is also enabled.
-
-The ASB deploys its own etcd instance separate from the etcd used by the rest of
-the {product-title} cluster. The ASB's etcd instance requires separate storage
+The OAB deploys its own etcd instance separate from the etcd used by the rest of
+the {product-title} cluster. The OAB's etcd instance requires separate storage
 using persistent volumes (PVs) to function. If no PV is available, etcd will
-wait until the PV can be satisfied. The ASB application will enter a `CrashLoop`
+wait until the PV can be satisfied. The OAB application will enter a `CrashLoop`
 state until its etcd instance is available.
 
 [NOTE]
@@ -1660,10 +1637,10 @@ xref:../../install_config/persistent_storage/index.adoc#install-config-persisten
 ====
 
 Some Ansible playbook bundles (APBs) may also require a PV for their own usage.
-Two APBs are currently provided with {product-title} 3.6: MediaWiki and
+Two APBs are currently provided with {product-title} 3.7: MediaWiki and
 PostgreSQL. Both of these require their own PV to deploy.
 
-To configure the ASB:
+To configure the OAB:
 
 . In your inventory file, add `nfs` to the `[OSEv3:children]` section to enable
 the `[nfs]` group:
@@ -1683,9 +1660,7 @@ be the NFS host:
 master1.example.com
 ----
 
-. In addition to the settings from xref:enabling-service-catalog[Enabling the
-Service Catalog], add the following in the `[OSEv3:vars]`
-section:
+. Add the following in the `[OSEv3:vars]` section:
 +
 ----
 openshift_hosted_etcd_storage_kind=nfs
@@ -1712,31 +1687,13 @@ ifdef::openshift-origin[]
 requires authentication for pulling APBs.
 endif::[]
 +
-These settings create a persistent volume that is attached to the ASB's etcd
+These settings create a persistent volume that is attached to the OAB's etcd
 instance during cluster installation.
 
 [[configuring-template-service-broker]]
 === Configuring the Template Service Broker
 
-[NOTE]
-====
-Enabling the template service broker is a Technology Preview feature only.
-ifdef::openshift-enterprise[]
-Technology Preview features are not
-supported with Red Hat production service level agreements (SLAs), might not be
-functionally complete, and Red Hat does not recommend to use them for
-production. These features provide early access to upcoming product features,
-enabling customers to test functionality and provide feedback during the
-development process.
-
-For more information on Red Hat Technology Preview features support scope, see
-https://access.redhat.com/support/offerings/techpreview/.
-endif::[]
-====
-
-If you have xref:enabling-service-catalog[enabled the service catalog], you can
-also enable the
-xref:../../architecture/service_catalog/template_service_broker.adoc#arch-template-service-broke[template service broker] (TSB).
+Starting with {product-title} 3.7, the xref:../../architecture/service_catalog/template_service_broker.adoc#arch-template-service-broke[template service broker] (TSB) is enabled by default.
 
 To configure the TSB:
 
@@ -2320,10 +2277,10 @@ containerized environment instead of directly on the host.
 +
 ----
 ifdef::openshift-enterprise[]
-$ docker pull registry.access.redhat.com/openshift3/ose-ansible:v3.6
+$ docker pull registry.access.redhat.com/openshift3/ose-ansible:v3.7
 endif::[]
 ifdef::openshift-origin[]
-$ docker pull docker.io/openshift/origin-ansible:v3.6
+$ docker pull docker.io/openshift/origin-ansible:v3.7
 endif::[]
 ----
 
@@ -2335,10 +2292,10 @@ the installer image from the local *docker* engine to OSTree storage:
 ----
 $ atomic pull --storage ostree \
 ifdef::openshift-enterprise[]
-    docker:registry.access.redhat.com/openshift3/ose-ansible:v3.6
+    docker:registry.access.redhat.com/openshift3/ose-ansible:v3.7
 endif::[]
 ifdef::openshift-origin[]
-    docker:docker.io/openshift/origin-ansible:v3.6
+    docker:docker.io/openshift/origin-ansible:v3.7
 endif::[]
 ----
 
@@ -2350,10 +2307,10 @@ $ atomic install --system \
     --name=openshift-installer \//<1>
     --set INVENTORY_FILE=/path/to/inventory \//<2>
 ifdef::openshift-enterprise[]
-    docker:registry.access.redhat.com/openshift3/ose-ansible:v3.6
+    docker:registry.access.redhat.com/openshift3/ose-ansible:v3.7
 endif::[]
 ifdef::openshift-origin[]
-    docker:docker.io/openshift/origin-ansible:v3.6
+    docker:docker.io/openshift/origin-ansible:v3.7
 endif::[]
 ----
 <1> Sets the name for the systemd service.
@@ -2395,113 +2352,18 @@ $ atomic install --system \
     --storage=ostree \
     --name=openshift-installer \
     --set INVENTORY_FILE=/etc/ansible/hosts \
-    --set PLAYBOOK_FILE=playbooks/byo/openshift-cluster/upgrades/v3_6/upgrade.yml \//<1>
+    --set PLAYBOOK_FILE=playbooks/byo/openshift-cluster/upgrades/v3_7/upgrade.yml \//<1>
 ifdef::openshift-enterprise[]
-    docker:registry.access.redhat.com/openshift3/ose-ansible:v3.6
+    docker:registry.access.redhat.com/openshift3/ose-ansible:v3.7
 endif::[]
 ifdef::openshift-origin[]
-    docker:docker.io/openshift/origin-ansible:v3.6
+    docker:docker.io/openshift/origin-ansible:v3.7
 endif::[]
 ----
 <1> Set `PLAYBOOK_FILE` to the relative path of the playbook starting at the
 *_playbooks/_* directory. Playbooks mentioned elsewhere in {product-title}
 documentation assume use of the RPM-based installer, so use this relative path
 instead when using the containerized installer.
-
-[[running-the-advanced-installation-tsb]]
-=== Deploying the Template Service Broker
-
-If you have xref:enabling-service-catalog[enabled the service catalog] and want
-to deploy the xref:configuring-template-service-broker[template service broker]
-(TSB), run the following manual steps after the cluster installation completes
-successfully:
-
-[NOTE]
-====
-The template service broker is a Technology Preview feature only.
-ifdef::openshift-enterprise[]
-Technology Preview features are not
-supported with Red Hat production service level agreements (SLAs), might not be
-functionally complete, and Red Hat does not recommend to use them for
-production. These features provide early access to upcoming product features,
-enabling customers to test functionality and provide feedback during the
-development process.
-
-For more information on Red Hat Technology Preview features support scope, see
-https://access.redhat.com/support/offerings/techpreview/.
-endif::[]
-====
-
-[WARNING]
-====
-Enabling the TSB currently requires opening unauthenticated access to the
-cluster; this security issue will be resolved before exiting the Technology
-Preview phase.
-====
-
-. Ensure that one or more source projects for the TSB were defined via
-`openshift_template_service_broker_namespaces` as described in
-xref:../../install_config/install/advanced_install.adoc#configuring-template-service-broker[Configuring the Template Service Broker].
-
-. Run the following command to enable unauthenticated access for the TSB:
-+
-----
-$ oc adm policy add-cluster-role-to-group \
-    system:openshift:templateservicebroker-client \
-    system:unauthenticated system:authenticated
-----
-
-. Create a *_template-broker.yml_* file with the following contents:
-+
-[source,yaml]
-----
-apiVersion: servicecatalog.k8s.io/v1alpha1
-kind: Broker
-metadata:
-  name: template-broker
-spec:
-  url: https://kubernetes.default.svc:443/brokers/template.openshift.io
-----
-
-. Use the file to register the broker:
-+
-----
-$ oc create -f template-broker.yml
-----
-
-. Enable the Technology Preview feature in the web console to use the TSB instead
-of the standard `openshift` global library behavior.
-
-.. Save the following script to a file (for example, *_tech-preview.js_*):
-+
-[source, javascript]
-----
-window.OPENSHIFT_CONSTANTS.ENABLE_TECH_PREVIEW_FEATURE.template_service_broker = true;
-----
-
-.. Add the file to the master configuration file in
-*_/etc/origin/master/master-config.yml_*:
-+
-[source, yaml]
-----
-assetConfig:
-  ...
-  extensionScripts:
-    - /path/to/tech-preview.js
-----
-
-.. Restart the master service:
-+
-ifdef::openshift-origin[]
-----
-# systemctl restart origin-master
-----
-endif::[]
-ifdef::openshift-enterprise[]
-----
-# systemctl restart atomic-openshift-master
-----
-endif::[]
 
 [[advanced-verifying-the-installation]]
 == Verifying the Installation
