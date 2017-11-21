@@ -1621,10 +1621,10 @@ endif::[]
 
 When the service catalog is enabled, the web console shows the updated landing
 page. The OpenShift Ansible broker and template service broker are both enabled
-as well; see xref:configuring-ansible-service-broker[Configuring the Ansible Service Broker] and xref:configuring-template-service-broker[Configuring the Template Service Broker] for more information.
+as well; see xref:configuring-openshift-ansible-broker[Configuring the OpenShift Ansible Broker] and xref:configuring-template-service-broker[Configuring the Template Service Broker] for more information.
 
-[[configuring-ansible-service-broker]]
-=== Configuring the Ansible Service Broker
+[[configuring-openshift-ansible-broker]]
+=== Configuring the OpenShift Ansible Broker
 
 Starting with {product-title} 3.7, the
 xref:../../architecture/service_catalog/ansible_service_broker.adoc#arch-ansible-service-broker[OpenShift Ansible broker] (OAB) is enabled by default.
@@ -1701,22 +1701,14 @@ instance during cluster installation.
 
 Starting with {product-title} 3.7, the xref:../../architecture/service_catalog/template_service_broker.adoc#arch-template-service-broke[template service broker] (TSB) is enabled by default.
 
-To configure the TSB:
+To configure the TSB, one or more projects must be defined as the broker's
+source namespace(s) for loading templates and image streams into the service
+catalog. Set the desired projects by modifying the following in your inventory
+file's `[OSEv3:vars]` section:
 
-. One or more projects must be defined as the broker's source
-namespace(s) for loading templates and image streams into the service catalog.
-Set the desired projects by modifying the following in your inventory file's
-`[OSEv3:vars]` section:
-+
 ----
 openshift_template_service_broker_namespaces=['openshift','myproject']
 ----
-
-. The installer currently does not automate installation of the TSB, so additional
-steps must be run manually after the cluster installation has completed.
-Continue with the rest of the preparation of your inventory file, then see
-xref:running-the-advanced-installation[Running the Advanced Installation] for
-the additional steps to deploy the TSB.
 
 [[configuring-web-console-customization]]
 === Configuring Web Console Customization
@@ -2226,6 +2218,8 @@ infra-node2.example.com openshift_node_labels="{'region': 'infra', 'zone': 'defa
 
 To use this example, modify the file to match your environment and
 specifications, and save it as *_/etc/ansible/hosts_*.
+
+
 
 [[running-the-advanced-installation]]
 == Running the Advanced Installation

@@ -1,5 +1,5 @@
 [[arch-ansible-service-broker]]
-= Ansible Service Broker
+= OpenShift Ansible Broker
 {product-author}
 {product-version}
 :data-uri:

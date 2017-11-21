@@ -2,8 +2,8 @@
 = Performing Manual In-place Cluster Upgrades
 {product-author}
 {product-version}
-:latest-tag: v3.7
-:latest-int-tag: v3.7
+:latest-tag: v3.7.9
+:latest-int-tag: v3.7.9
 :data-uri:
 :icons:
 :experimental:
@@ -1291,6 +1291,16 @@ For native HA multiple master deployments:
 After the service restarts, the certificate update is complete.
 // end::30to31updatingcerts[]
 endif::[]
+
+[[manual-upgrading-service-catalog]]
+== Upgrading the Service Catalog
+
+[NOTE]
+====
+Manual upgrade steps for the service catalog and service brokers are not available.
+====
+
+include::install_config/upgrading/automated_upgrades.adoc[tag=automated-service-catalog-upgrade-steps]
 
 [[manual-upgrading-efk-logging-stack]]
 == Upgrading the EFK Logging Stack

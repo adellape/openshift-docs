@@ -2,8 +2,8 @@
 = Performing Automated In-place Cluster Upgrades
 {product-author}
 {product-version}
-:latest-tag: v3.7
-:latest-int-tag: v3.7.0
+:latest-tag: v3.7.9
+:latest-int-tag: v3.7.9
 :data-uri:
 :icons:
 :experimental:
@@ -239,10 +239,13 @@ enabled.
 +
 [cols="1,4"]
 |===
-| Feature | Next Step
+|Feature |Next Step
 
-| Aggregated Logging
-| xref:automated-upgrading-efk-logging-stack[Upgrade the EFK logging stack.]
+|Service Catalog
+|xref:automated-upgrading-service-catalog[Enable and configure the service catalog.]
+
+|Aggregated Logging
+|xref:automated-upgrading-efk-logging-stack[Upgrade the EFK logging stack.]
 
 | Cluster Metrics
 | xref:automated-upgrading-cluster-metrics[Upgrade cluster metrics.]
@@ -518,6 +521,41 @@ ifdef::openshift-origin[]
 :sect: automated
 include::install_config/upgrading/manual_upgrades.adoc[tag=30to31updatingcerts]
 endif::[]
+
+[[automated-upgrading-service-catalog]]
+== Upgrading the Service Catalog
+
+// tag::automated-service-catalog-upgrade-steps[]
+Starting with {product-title} 3.7, the service catalog, OpenShift Ansible
+broker, and template service broker are enabled and deployed by default for new
+cluster installations. However, they are not deployed by default during the
+upgrade from {product-title} 3.6 to 3.7, so you must run an individual component
+playbook separate post-upgrade.
+
+[NOTE]
+====
+Upgrading from the {product-title} 3.6 Technology Preview version of the service
+catalog and service brokers is not supported.
+====
+
+To upgrade to these features:
+
+. See the following three sections in the
+xref:../../install_config/install/advanced_install.adoc#install-config-install-advanced-install[Advanced Installation] topic and update your inventory file accordingly:
++
+--
+- xref:../../install_config/install/advanced_install.adoc#enabling-service-catalog[Configuring the Service Catalog]
+- xref:../../install_config/install/advanced_install.adoc#configuring-openshift-ansible-broker[Configuring the OpenShift Ansible Broker]
+- xref:../../install_config/install/advanced_install.adoc#configuring-template-service-broker[Configuring the Template Service Broker]
+--
+
+. Run the following playbook:
++
+----
+# ansible-playbook -i </path/to/inventory/file> \
+    /usr/share/ansible/openshift-ansible/playbooks/byo/openshift-cluster/service-catalog.yml
+----
+// end::automated-service-catalog-upgrade-steps[]
 
 [[automated-upgrading-efk-logging-stack]]
 == Upgrading the EFK Logging Stack

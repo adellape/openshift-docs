@@ -229,7 +229,7 @@ Topics:
     File: index
   - Name: Template Service Broker
     File: template_service_broker
-  - Name: Ansible Service Broker
+  - Name: OpenShift Ansible Broker
     File: ansible_service_broker
 - Name: Revision History
   File: revhistory_architecture
