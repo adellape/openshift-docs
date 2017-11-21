@@ -8,6 +8,12 @@
 :toc: macro
 :toc-title:
 :prewrap!:
+ifdef::openshift-enterprise[]
+:pb-prefix: /usr/share/ansible/openshift-ansible/
+endif::[]
+ifdef::openshift-origin[]
+:pb-prefix: ~/openshift-ansible/
+endif::[]
 
 toc::[]
 
@@ -2221,8 +2227,6 @@ infra-node2.example.com openshift_node_labels="{'region': 'infra', 'zone': 'defa
 To use this example, modify the file to match your environment and
 specifications, and save it as *_/etc/ansible/hosts_*.
 
-
-
 [[running-the-advanced-installation]]
 == Running the Advanced Installation
 
@@ -2231,6 +2235,17 @@ inventory file in *_/etc/ansible/hosts_*, you run the advanced installation
 playbook via Ansible. {product-title} installations are currently supported
 using the RPM-based installer, while the containerized installer is currently a
 Technology Preview feature.
+
+The installer uses modularized playbooks allowing administrators to install
+specific components as needed. By breaking up the roles and playbooks, there is
+better targeting of ad hoc administration tasks. This results in an increased
+level of control during installations and results in time savings. 
+
+[NOTE]
+====
+The playbooks and their ordering are detailed below in
+xref:running-the-advanced-installation-individual-components[Running Individual Component Playbooks].
+====
 
 [[running-the-advanced-installation-rpm]]
 === Running the RPM-based Installer
@@ -2364,6 +2379,74 @@ endif::[]
 *_playbooks/_* directory. Playbooks mentioned elsewhere in {product-title}
 documentation assume use of the RPM-based installer, so use this relative path
 instead when using the containerized installer.
+
+[[running-the-advanced-installation-individual-components]]
+=== Running Individual Component Playbooks
+
+The main installation playbook *_{pb-prefix}playbooks/byo/config.yml_* runs a
+set of individual component playbooks in a specific order, and the installer
+reports back at the end what phases you have gone through. If the installation
+fails during a phase, you are notified on the screen along with the errors from
+the Ansible run.
+
+After you resolve the issue, rather than run the entire installation over again,
+you can pick up from the failed phase. You must then run each of the remaining
+playbooks in order:
+
+----
+# ansible-playbook  [-i /path/to/inventory] <playbook_file_location>
+----
+
+The following table is sorted in order of when each individual component
+playbook is run:
+
+.Individual Component Playbook Run Order
+[options="header",cols="1,3"]
+|===
+|Playbook Name |File Location
+
+|Health Check
+|*_{pb-prefix}playbooks/byo/openshift-checks/pre-install.yml_*
+
+|etcd Install
+|*_{pb-prefix}playbooks/byo/openshift-etcd/config.yml_*
+
+|NFS Install
+|*_{pb-prefix}playbooks/byo/openshift-nfs/config.yml_*
+
+|Load Balancer Install
+|*_{pb-prefix}playbooks/byo/openshift-loadbalancer/config.yml_*
+
+|Master Install
+|*_{pb-prefix}playbooks/byo/openshift-master/config.yml_*
+
+|Master Additional Install
+|*_{pb-prefix}playbooks/byo/openshift-master/additional_config.yml_*
+
+|Node Install
+|*_{pb-prefix}playbooks/byo/openshift-node/config.yml_*
+
+|GlusterFS Install
+|*_{pb-prefix}playbooks/byo/openshift-glusterfs/config.yml_*
+
+|Hosted Install
+|*_{pb-prefix}playbooks/byo/openshift-cluster/openshift-hosted.yml_*
+
+|Metrics Install
+|*_{pb-prefix}playbooks/byo/openshift-cluster/openshift-metrics.yml_*
+
+|Logging Install
+|*_{pb-prefix}playbooks/byo/openshift-cluster/openshift-logging.yml_*
+
+|Prometheus Install
+|*_{pb-prefix}playbooks/byo/openshift-cluster/openshift-prometheus.yml_*
+
+|Service Catalog Install
+|*_{pb-prefix}playbooks/byo/openshift-cluster/service-catalog.yml_*
+
+|Management Install
+|*_{pb-prefix}playbooks/byo/openshift-management/config.yml_*
+|===
 
 [[advanced-verifying-the-installation]]
 == Verifying the Installation
