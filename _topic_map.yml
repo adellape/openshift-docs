@@ -66,5 +66,9 @@ Name: Operators
 Dir: operators
 Distros: openshift-*
 Topics:
+- Name: What are Operators?
+  File: what-are-operators
+- Name: Operator Framework architecture and design
+  File: operator-framework-architecture-design
 - Name: Getting started with the Operator SDK
   File: osdk-getting-started

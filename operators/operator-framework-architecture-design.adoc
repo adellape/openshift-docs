@@ -1,0 +1,29 @@
+// This assembly is included in the following assemblies:
+//
+// * n/a
+
+[id='operator-framework-architecture-design']
+= Operator Framework architecture and design
+{product-author}
+{product-version}
+:data-uri:
+:icons:
+:experimental:
+:toc: macro
+:toc-title:
+:prewrap!:
+:context: operator-framework-architecture-design
+
+toc::[]
+
+{nbsp} +
+This guide outlines the architecture and design of the Operator Framework.
+
+include::modules/olm-architecture.adoc[leveloffset=+1]
+
+== Appendices
+
+////
+[discrete]
+include::modules/operator-project-staffolding-layout.adoc[leveloffset=+2]
+////
