@@ -908,7 +908,7 @@ Topics:
   File: securing-exposing-registry
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
 ---
-Name: Operators
+Name: Operator lifecycle
 Dir: operators
 Topics:
 - Name: Understanding Operators
@@ -986,35 +986,36 @@ Topics:
   - Name: Using OLM on restricted networks
     File: olm-restricted-networks
     Distros: openshift-origin,openshift-enterprise,openshift-webscale
-- Name: Developing Operators
-  Dir: operator_sdk
-  Distros: openshift-origin,openshift-enterprise,openshift-webscale
-  Topics:
-  - Name: Getting started with the Operator SDK
-    File: osdk-getting-started
-  - Name: Creating Ansible-based Operators
-    File: osdk-ansible
-  - Name: Creating Helm-based Operators
-    File: osdk-helm
-  - Name: Generating a ClusterServiceVersion (CSV)
-    File: osdk-generating-csvs
-  - Name: Working with bundle images
-    File: osdk-working-bundle-images
-  - Name: Validating Operators using the scorecard
-    File: osdk-scorecard
-  - Name: Configuring built-in monitoring with Prometheus
-    File: osdk-monitoring-prometheus
-  - Name: Configuring leader election
-    File: osdk-leader-election
-  - Name: Operator SDK CLI reference
-    File: osdk-cli-reference
-  - Name: Migrating to Operator SDK v0.1.0
-    File: osdk-migrating-to-v0-1-0
-    Distros: openshift-origin
-  - Name: Appendices
-    File: osdk-appendices
 - Name: Red Hat Operators reference
   File: operator-reference
+---
+Name: Operator development
+Dir: operator_sdk
+Distros: openshift-origin,openshift-enterprise,openshift-ebscale
+Topics:
+- Name: Getting started with the Operator SDK
+  File: osdk-getting-started
+- Name: Creating Ansible-based Operators
+  File: osdk-ansible
+- Name: Creating Helm-based Operators
+  File: osdk-helm
+- Name: Generating a ClusterServiceVersion (CSV)
+  File: osdk-generating-csvs
+- Name: Working with bundle images
+  File: osdk-working-bundle-images
+- Name: Validating Operators using the scorecard
+  File: osdk-scorecard
+- Name: Configuring built-in monitoring with Prometheus
+  File: osdk-monitoring-prometheus
+- Name: Configuring leader election
+  File: osdk-leader-election
+- Name: Operator SDK CLI reference
+  File: osdk-cli-reference
+- Name: Migrating to Operator SDK v0.1.0
+  File: osdk-migrating-to-v0-1-0
+  Distros: openshift-origin
+- Name: Appendices
+  File: osdk-appendices
 ---
 Name: Builds
 Dir: builds
