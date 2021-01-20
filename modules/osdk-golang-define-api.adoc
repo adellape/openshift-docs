@@ -1,6 +1,6 @@
 // Module included in the following assemblies:
 //
-// * operators/operator_sdk/osdk-golang-tutorial.adoc
+// * operators/operator_sdk/golang/osdk-golang-tutorial.adoc
 
 [id="osdk-golang-define-api_{context}"]
 = Defining the API
@@ -32,7 +32,7 @@ type MemcachedStatus struct {
 [source,go]
 ----
 // Memcached is the Schema for the memcacheds API
-// +kubebuilder:subresource:status
+// +kubebuilder:subresource:status <1>
 type Memcached struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -41,6 +41,7 @@ type Memcached struct {
 	Status MemcachedStatus `json:"status,omitempty"`
 }
 ----
+<1> Add this line.
 +
 This enables the controller to update the CR status without changing the rest of the CR object.
 

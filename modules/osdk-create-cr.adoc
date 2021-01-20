@@ -1,0 +1,186 @@
+// Module included in the following assemblies:
+//
+// * operators/operator_sdk/golang/osdk-golang-tutorial.adoc
+// * operators/operator_sdk/ansible/osdk-ansible-tutorial.adoc
+// * operators/operator_sdk/helm/osdk-helm-tutorial.adoc
+
+ifeval::["{context}" == "osdk-golang-tutorial"]
+:golang:
+:app-proper: Memcached
+:app: memcached
+:group: cache
+endif::[]
+ifeval::["{context}" == "osdk-ansible-tutorial"]
+:ansible:
+:app-proper: Memcached
+:app: memcached
+:group: cache
+endif::[]
+ifeval::["{context}" == "osdk-helm-tutorial"]
+:helm:
+:app-proper: Nginx
+:app: nginx
+:group: demo
+endif::[]
+
+[id="osdk-create-cr_{context}"]
+= Creating a custom resource
+
+After your Operator is installed, you can test it by creating a custom resource (CR) that is now provided on the cluster by the Operator.
+
+.Prerequisites
+
+* Example {app-proper} Operator, which provides the `{app-proper}` CR, installed on a cluster
+
+.Procedure
+
+. Change to the `{app}-operator-system` namespace:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc project {app}-operator-system
+----
+
+. Edit the sample `{app-proper}` CR manifest at `config/samples/{group}_v1alpha1_{app}.yaml` to contain the following specification:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: {group}.example.com/v1alpha1
+kind: {app-proper}
+metadata:
+  name: {app}-sample
+spec:
+  size: 3
+----
+
+. Create the CR:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc apply -f config/samples/{group}_v1alpha1_{app}.yaml
+----
+
+. Ensure that the `{app-proper}` Operator creates the deployment for the sample CR with the correct size:
++
+[source,terminal]
+----
+$ oc get deployments
+----
++
+.Example output
+[source,terminal,subs="attributes+"]
+----
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+{app}-operator-controller-manager   1/1     1            1           8m
+{app}-sample                        3/3     3            3           1m
+----
+
+. Check the pods and CR status to confirm the status is updated with the {app-proper} pod names.
+
+.. Check the pods:
++
+[source,terminal]
+----
+$ oc get pods
+----
++
+.Example output
+[source,terminal,subs="attributes+"]
+----
+NAME                                  READY     STATUS    RESTARTS   AGE
+{app}-sample-6fd7c98d8-7dqdr      1/1       Running   0          1m
+{app}-sample-6fd7c98d8-g5k7v      1/1       Running   0          1m
+{app}-sample-6fd7c98d8-m7vn7      1/1       Running   0          1m
+----
+
+.. Check the CR status:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc get {app}/{app}-sample -o yaml
+----
++
+.Example output
+[source,yaml,subs="attributes+"]
+----
+apiVersion: {group}.example.com/v1alpha1
+kind: {app-proper}
+metadata:
+  clusterName: ""
+  creationTimestamp: 2018-03-31T22:51:08Z
+  generation: 0
+  name: {app}-sample
+  namespace: default
+  resourceVersion: "245453"
+  selfLink: /apis/{group}.example.com/v1alpha1/namespaces/default/{app}/{app}-sample
+  uid: 0026cc97-3536-11e8-bd83-0800274106a1
+spec:
+  size: 3
+status:
+  nodes:
+  - {app}-sample-6fd7c98d8-7dqdr
+  - {app}-sample-6fd7c98d8-g5k7v
+  - {app}-sample-6fd7c98d8-m7vn7
+----
+
+. Update the deployment size.
+
+.. Update `config/samples/{group}_v1alpha1_{app}.yaml` file to change the `spec.size` field in the `{app-proper}` CR from `3` to `5`:
++
+[source,terminal,subs="attributes+"]
+----
+$ oc patch {app} {app}-sample \
+    -p '{"spec":{"size": 5}}'\
+    --type=merge
+----
+
+.. Confirm that the Operator changes the deployment size:
++
+[source,terminal]
+----
+$ oc get deployments
+----
++
+.Example output
+[source,terminal,subs="attributes+"]
+----
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+{app}-operator-controller-manager   1/1     1            1           10m
+{app}-sample                        5/5     5            5           3m
+----
+
+. Clean up the resources that have been created as part of this tutorial.
+
+* If you used the `make deploy` command to test the Operator, run the following command:
++
+[source,terminal]
+----
+$ make undeploy
+----
+
+* If you used the `operator-sdk run bundle` command to test the Operator, run the following command:
++
+[source,terminal]
+----
+$ operator-sdk cleanup <project_name>
+----
+
+
+ifeval::["{context}" == "osdk-golang-tutorial"]
+:!golang:
+:!app-proper:
+:!app:
+:!group:
+endif::[]
+ifeval::["{context}" == "osdk-ansible-tutorial"]
+:!ansible:
+:app-proper:
+:!app:
+:!group:
+endif::[]
+ifeval::["{context}" == "osdk-helm-tutorial"]
+:!helm:
+:!app-proper:
+:!app:
+:!group:
+endif::[]
