@@ -422,7 +422,7 @@ In the table, features are marked with the following statuses:
 |v1beta1 CRDs
 |DEP
 |DEP
-|
+|DEP
 
 |Docker Registry v1 API
 |GA
