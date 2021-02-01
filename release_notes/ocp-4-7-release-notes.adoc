@@ -215,15 +215,20 @@ To make upgrades more robust, it is recommend that Operators actively communicat
 
 In {product-title} 4.7, Operators can take advantage of the new `OperatorCondition` resource to communicate a non-upgradeable state to Operator Lifecycle Manager (OLM), such as when a related service is performing a critical operation. The non-upgradeable state delays any pending Operator upgrade, whether automatically or manually approved, until the Operator finishes the operation and reports upgrade readiness.
 
-See _Operator conditions_ for more about how OLM uses this communication channel.
+See xref:../operators/understanding/olm/olm-operatorconditions.adoc#olm-operatorconditions[Operator conditions] for more about how OLM uses this communication channel.
 
-// Will update to an xref after related PR merge
-
-See _Managing Operator conditions_ for details on overriding states in OLM as a cluster administrator.
-
-// Will update to an xref after related PR merge
+See xref:../operators/admin/olm-managing-operatorconditions.adoc#olm-operatorconditions[Managing Operator conditions] for details on overriding states in OLM as a cluster administrator.
 
 See xref:../operators/operator_sdk/osdk-generating-csvs.adoc#osdk-operatorconditions_osdk-generating-csvs[Enabling Operator conditions] for details on updating your project as an Operator developer to use the communication channel.
+
+[id="ocp-4-7-pull-secrets-cs"]
+==== Adding pull secrets to catalog sources
+
+If certain images relevant to Operators managed by Operator Lifecycle Manager (OLM) are hosted in an authenticated container image registry, also known as a private registry, OLM and OperatorHub are unable to pull the images by default. To enable access, you can create a pull secret that contains the authentication credentials for the registry.
+
+By referencing one or more secrets in a catalog source, some of these required images can be pulled for use in OperatorHub, while other images require updates to the global cluster pull secret.
+
+See xref:../operators/admin/olm-managing-custom-catalogs.adoc#olm-accessing-images-private-registries_olm-managing-custom-catalogs[Accessing images for Operators from private registries] for more details.
 
 [id="ocp-4-7-osdk"]
 === Operator development
