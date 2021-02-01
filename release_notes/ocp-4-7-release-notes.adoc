@@ -254,7 +254,7 @@ Validation scorecard:: Operator authors should validate that their Operator is p
 
 Upgrade readiness reporting:: Operator developers can use the Operator SDK to take advantage of code scaffolding support for Operator conditions, including reporting upgrade readiness to OLM.
 
-See xref:../operators/operator_sdk/osdk-getting-started.adoc#osdk-getting-started[Developing Operators] for full documentation on the Operator SDK.
+See xref:../operators/operator_sdk/osdk-about.adoc#osdk-about[Developing Operators] for full documentation on the Operator SDK.
 
 [id="ocp-4-7-images"]
 === Images
