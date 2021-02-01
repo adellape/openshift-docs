@@ -205,9 +205,51 @@ The {product-title} internal registry and image streams now support Open Contain
 
 //Add link
 
-[id="ocp-4-7-operators"]
+[id="ocp-4-7-olm"]
 === Operator lifecycle
 
+[id="ocp-4-7-safe-operator-upgrades"]
+==== Safe Operator upgrades
+
+To make upgrades more robust, it is recommend that Operators actively communicate with the service that is about to be updated. If a service is processing a critical operation, such as live migrating virtual machines (VMs) in OpenShift Virtualization or restoring a database, it might be unsafe to upgrade the related Operator at that time.
+
+In {product-title} 4.7, Operators can take advantage of the new `OperatorCondition` resource to communicate a non-upgradeable state to Operator Lifecycle Manager (OLM), such as when a related service is performing a critical operation. The non-upgradeable state delays any pending Operator upgrade, whether automatically or manually approved, until the Operator finishes the operation and reports upgrade readiness.
+
+See _Operator conditions_ for more about how OLM uses this communication channel.
+
+// Will update to an xref after related PR merge
+
+See _Managing Operator conditions_ for details on overriding states in OLM as a cluster administrator.
+
+// Will update to an xref after related PR merge
+
+See xref:../operators/operator_sdk/osdk-generating-csvs.adoc#osdk-operatorconditions_osdk-generating-csvs[Enabling Operator conditions] for details on updating your project as an Operator developer to use the communication channel.
+
+[id="ocp-4-7-osdk"]
+=== Operator development
+
+[id="ocp-4-7-osdk-supported"]
+==== Operator SDK now fully supported
+
+As of {product-title} 4.7, the Operator SDK is now a fully supported Red Hat offering. With the downstream release of Operator SDK v1.3.0, officially supported and branded Operator SDK tooling is now available for download directly from Red Hat.
+
+The Operator SDK CLI assists Operator developers and independent software vendor (ISV) partners in writing Operators that provide a great user experience and are compatible with OpenShift distributions and Operator Lifecycle Manager (OLM).
+
+The Operator SDK enables Operator authors with cluster administrator access to a Kubernetes-based cluster, such as {product-title}, to develop their own Operators based on Go, Ansible, or Helm. For Go-based Operators, link:https://kubebuilder.io/[Kubebuilder] is embedded into the SDK as the scaffolding solution; this means existing Kubebuilder projects can be used as is with the SDK and continue to work.
+
+The following features highlight some of the capabilities of the Operator SDK:
+
+Native support for Operator Bundle Format:: The Operator SDK includes native support for the Operator Bundle Format introduced in {product-title} 4.6. All metadata required to package an Operator for OLM is generated automatically. This support enables Operator developers to package and test their Operator for OLM and OpenShift distributions directly from their CI pipelines.
+
+Operator Lifecycle Manager integration:: The Operator SDK provides developers with a streamlined experience for quickly testing their Operator with OLM from their workstation. The `operator-sdk run` command runs an Operator on a cluster to test whether it behaves correctly when managed by OLM.
+
+Webhook integration:: The Operator SDK supports webhook integration with OLM, which simplifies installing Operators that have admission or custom resource definition (CRD) conversion webhooks. This feature relieves the cluster administrator of having to manually register the webhooks, add TLS certificates, and set up certificate rotation.
+
+Validation scorecard:: Operator authors should validate that their Operator is packaged correctly and free of syntax errors. To validate an Operator, the scorecard tool provided by the Operator SDK begins by creating all resources required by any related custom resources (CRs) and the Operator. The scorecard then creates a proxy container in the deployment of the Operator, which is used to record calls to the API server and run some of the tests. The tests performed also examine some of the parameters in the CRs.
+
+Upgrade readiness reporting:: Operator developers can use the Operator SDK to take advantage of code scaffolding support for Operator conditions, including reporting upgrade readiness to OLM.
+
+See xref:../operators/operator_sdk/osdk-getting-started.adoc#osdk-getting-started[Developing Operators] for full documentation on the Operator SDK.
 
 [id="ocp-4-7-images"]
 === Images
@@ -360,12 +402,17 @@ In the table, features are marked with the following statuses:
 |Package Manifest Format (Operator Framework)
 |DEP
 |DEP
-|
+|DEP
 
 |`oc adm catalog build`
 |DEP
 |DEP
-|
+|DEP
+
+|`--filter-by-os` flag for `oc adm catalog mirror`
+|GA
+|GA
+|DEP
 
 |v1beta1 CRDs
 |DEP
@@ -396,6 +443,13 @@ In the table, features are marked with the following statuses:
 ==== Scheduler policy
 
 Using a scheduler policy to control pod placement is deprecated and is planned for removal in a future release. For more information on the Technology Preview alternative, see xref:../nodes/scheduling/nodes-scheduler-profiles.adoc#nodes-scheduler-profiles[Scheduling pods using a scheduler profile].
+
+[id="ocp-4-7-filterbyos-deprecated"]
+==== Catalog mirroring using filter-by-os flag
+
+When using the `oc adm catalog mirror` command to mirror catalogs, the `--filter-by-os` flag was previously allowed to filter architectures of mirrored content. This would break references to those images in the catalog that point to the manifest list and not the manifest. The `--filter-by-os` flag now only filters the index image that is pulled and unpacked. To clarify this, the new `--index-filter-by-os` flag is now added and should be used instead.
+
+The `--filter-by-os` flag is also now deprecated.
 
 [id="ocp-4-7-removed-features"]
 === Removed features
