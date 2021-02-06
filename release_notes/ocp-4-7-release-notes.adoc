@@ -254,6 +254,11 @@ Validation scorecard:: Operator authors should validate that their Operator is p
 
 Upgrade readiness reporting:: Operator developers can use the Operator SDK to take advantage of code scaffolding support for Operator conditions, including reporting upgrade readiness to OLM.
 
+[NOTE]
+====
+Operator SDK 1.3.0 supports Kubernetes 1.19.
+====
+
 See xref:../operators/operator_sdk/osdk-about.adoc#osdk-about[Developing Operators] for full documentation on the Operator SDK.
 
 [id="ocp-4-7-images"]
@@ -379,7 +384,15 @@ With this additional information, Red Hat can provide improved remediation steps
 
 {product-title} 4.7 introduces the following notable technical changes.
 
+[discrete]
+[id="ocp-4-7-olm-k8s-1-20"]
+==== OLM updated to use Kubernetes 1.20
 
+Operator Lifecycle Manager (OLM) strives to keep up to date with Kubernetes releases when they become available. The OLM-provided `ClusterServiceVersion` (CSV) resource is composed of a number of core Kubernetes resources. When OLM increments Kubernetes dependencies, the embedded resources are updated as well.
+
+As of {product-title} 4.7, OLM and its associated components have been updated to use Kubernetes 1.20. Typically, Kubernetes is backwards compatible with a few of its previous versions. Operator authors are encouraged to keep their projects up to date to maintain compatibility and take advantage of updated resources.
+
+See xref:../release_notes/versioning-policy.adoc#ocp-4-3-versioning-policy[OpenShift Container Platform Versioning Policy] for more specific details on backwards compatibility guarantees.
 
 [id="ocp-4-7-deprecated-removed-features"]
 == Deprecated and removed features
