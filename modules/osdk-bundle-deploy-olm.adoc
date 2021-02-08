@@ -3,29 +3,18 @@
 // * operators/operator_sdk/golang/osdk-golang-tutorial.adoc
 // * operators/operator_sdk/ansible/osdk-ansible-tutorial.adoc
 // * operators/operator_sdk/helm/osdk-helm-tutorial.adoc
+// * operators/operator_sdk/osdk-working-bundle-images.adoc
 
 ifeval::["{context}" == "osdk-golang-tutorial"]
 :golang:
 endif::[]
-ifeval::["{context}" == "osdk-ansible-tutorial"]
-:ansible:
-endif::[]
-ifeval::["{context}" == "osdk-helm-tutorial"]
-:helm:
-endif::[]
 
 [id="osdk-bundle-deploy-olm_{context}"]
-= Bundling and deploying with OLM
+= Bundling an Operator and deploying on Operator Lifecycle Manager
 
 Operator Lifecycle Manager (OLM) helps you to install, update, and generally manage the lifecycle of Operators and their associated services on a Kubernetes cluster. OLM is installed by default on {product-title} and runs as a Kubernetes extension so that you can use the web console and the OpenShift CLI (`oc`) for all Operator lifecycle management functions without any additional tools.
 
-This example walks through getting an Operator ready for OLM that uses the Bundle Format, the default packaging format for Operator SDK and OLM.
-
-ifdef::golang[]
-.Prerequisites
-
-* Prepared your Go-based Operator to run on {product-title} by updating the project to use supported images
-endif::[]
+The Operator Bundle Format is the default packaging method for Operator SDK and OLM. You can get your Operator ready for OLM by building, pushing, validating, and running a bundle image on OLM with the Operator SDK.
 
 .Prerequisites
 
@@ -34,19 +23,13 @@ endif::[]
 - Operator Lifecycle Manager (OLM) installed on a Kubernetes-based cluster (v1.16.0 or later if you use `apiextensions.k8s.io/v1` CRDs, for example {product-title} {product-version})
 - Logged into the cluster with `oc` using an account with `cluster-admin` permissions
 - Operator built by using the Operator SDK
+ifdef::golang[]
 - Prepared your Operator to run on {product-title} by updating the project to use supported images
+endif::[]
 
 .Procedure
 
-. Check the status of OLM on your cluster by using the following Operator SDK command:
-+
-[source,terminal]
-----
-$ operator-sdk olm status \
-    --olm-namespace=openshift-operator-lifecycle-manager
-----
-
-. Create your Operator bundle manifest by running the `make bundle` command, which invokes several commands, including the Operator SDK `generate bundle` and `bundle validate` subcommands:
+. Create your Operator bundle manifest by running the `make bundle` command in your Operator project directory. This command invokes several other commands, including the Operator SDK `generate bundle` and `bundle validate` subcommands:
 +
 [source,terminal]
 ----
@@ -80,6 +63,14 @@ $ make bundle-build BUNDLE_IMG=<registry>/<user>/<image_name>:<tag>
 $ docker push <registry>/<user>/<image_name>:<tag>
 ----
 
+. Check the status of OLM on your cluster by using the following Operator SDK command:
++
+[source,terminal]
+----
+$ operator-sdk olm status \
+    --olm-namespace=openshift-operator-lifecycle-manager
+----
+
 . Run the Operator on your cluster by using the OLM integration in Operator SDK:
 +
 [source,terminal]
@@ -97,10 +88,4 @@ This command performs the following actions:
 
 ifeval::["{context}" == "osdk-golang-tutorial"]
 :!golang:
-endif::[]
-ifeval::["{context}" == "osdk-ansible-tutorial"]
-:!ansible:
-endif::[]
-ifeval::["{context}" == "osdk-helm-tutorial"]
-:!helm:
 endif::[]
