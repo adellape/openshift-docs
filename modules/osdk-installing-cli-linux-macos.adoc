@@ -58,7 +58,9 @@ $ echo $PATH
 $ sudo mv ./operator-sdk /usr/local/bin/operator-sdk
 ----
 
-. After you install the CLI, verify that it is available:
+.Verification
+
+* After you install the CLI, verify that it is available:
 +
 [source,terminal]
 ----
