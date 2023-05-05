@@ -1,0 +1,10 @@
+name: operators
+title: Operator Framework on OpenShift
+version: 1.28
+start_page: index.adoc
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    table-caption: false
+nav:
+- nav.adoc
